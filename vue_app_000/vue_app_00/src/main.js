@@ -29,6 +29,10 @@ import axios from "axios"
 axios.defaults.withCredentials=true;
 //7:将axios库配置Vue实例对象中
 Vue.prototype.axios=axios;
+//7.1:加载第三方模块
+import qs from "qs";
+//7.2:配置qs模块,qs成功vue属性
+Vue.prototype.qs=qs;
 //8:main.js创建日期过滤器
 Vue.filter("datatimeFilter",function(val){
   //1:创建日期对象

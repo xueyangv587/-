@@ -15,7 +15,11 @@ const cors=require("cors");
 app.use(cors({
   origin:["http://127.0.0.1:8080","http://locallhost:8080"],
   credentials:true
-}))
+}));
+//7.加载第三方模块body-parser
+const bodyParser=require("body-parser");
+//8.配置对特殊json是否自动转换 不转
+app.use(bodyParser.urlencoded({extended:false}))
 app.get("/imageList",(req,res)=>{
   var list=[
     {id:1,img_url:"http://127.0.0.1:3000/img/banner1.png"},
@@ -111,4 +115,29 @@ app.get("/getComment",(req,res)=>{
     if(err) throw err;
     res.send({code:1,data:result});
   })
+});
+//  功能五:发表了评论
+//1:用户postpone请求/addcomment
+app.post("/addcomment",(req,res)=>{
+  //2:获取二个参数 nid content
+  var nid=req.body.nid;
+  var content=req.body.content;
+  //3:创建sql语句
+  var sql="INSERT INTO xz_comment VALUES";
+  sql+="(null,?,now(),?)";
+  //4:发送sql语句并且返回返回结果
+  pool.query(sql,[content,nid],(err,result)=>{
+    if(err) throw err;
+    //5:判断 评论成功 评论失败
+    if(result.affectedRows>0){
+      res.send({code:1,msg:"评论发表成功"});
+    }else{
+    res.send({code:-1,msg:"评论发表失败"});
+   }
+  })  
 })
+
+//6:加载body-parser模块 配置 写在app.js前面
+
+
+
