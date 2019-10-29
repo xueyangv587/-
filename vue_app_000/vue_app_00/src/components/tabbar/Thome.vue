@@ -23,9 +23,9 @@
 						</li>
 						<li
 							class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-							<a href="#"><img src="../../img/menu2.png" alt="">
+							<router-link to="/shopcart"><img src="../../img/menu2.png" alt="">
 								<div class="mui-media-body">购物车</div>
-						</a>
+						</router-link>
 						</li>
 						<li
 							class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
@@ -46,7 +46,6 @@
 						</a>
 						</li>
 					</ul>
-         <h1 @click="jump()">带参数的跳转</h1>
     </div>
 </template>
 <script>
@@ -68,9 +67,6 @@ export default {
             //2:接受服务器返回结果
             //3:将结果保存list
           },
-        jump(){
-        this.$router.push("/newslist?nid=6")
-      },
       },
       
       created(){

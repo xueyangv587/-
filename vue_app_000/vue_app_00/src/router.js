@@ -8,6 +8,10 @@ import Thome from "./components/tabbar/Thome.vue"
 import NewsList from "./components/home/NewsList.vue"
 import GoodList from "./components/goods/GoodList.vue"
 import NewsInfo from "./components/home/NewsInfo.vue"
+import GoodInfo from "./components/goods/GoodInfo.vue"
+import Login from "./components/home/Login.vue"
+import ShopCart from "./components/home/ShopCart.vue"
+import lianxi from "./components/lianxi/lianxi.vue"
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -20,6 +24,10 @@ export default new Router({
     {path:'/thome',component:Thome},
     {path:'/newslist',component:NewsList},
     {path:'/goodlist',component:GoodList},
-    {path:'/newsinfo',component:NewsInfo}
+    {path:'/newsinfo',component:NewsInfo},
+    {path:'/goodinfo',component:GoodInfo},
+    {path:'/login',component:Login},
+    {path:'/shopcart',component:ShopCart},
+    {path:'/lianxi',component:lianxi}
   ]
 })

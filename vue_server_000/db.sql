@@ -63,3 +63,21 @@ INSERT INTO xz_comment VALUES(null,'赞一个12',now(),1);
 INSERT INTO xz_comment VALUES(null,'赞一个13',now(),1);
 INSERT INTO xz_comment VALUES(null,'赞一个14',now(),1);
 INSERT INTO xz_comment VALUES(null,'赞一个15',now(),1);
+
+#创建用户登录表
+#用户登录密码需要加密保存使用 mysql自带函数md5()
+CREATE TABLE xz_login(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  uname VARCHAR(25),
+   upwd VARCHAR(32)
+);
+INSERT INTO xz_login VALUES(null,'tom',md5('123'));
+
+#创建购物车列表
+CREATE TABLE xz_cart(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  count INT,
+  price DECIMAL(15,2),
+  pid INT,
+  uid INT
+);

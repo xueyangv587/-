@@ -2,7 +2,7 @@
   <div class="app-goodlist">
     <!-- 商品项目 -->
     <div class="goods-item" v-for="item in list" :key="item.lid">
-      <img :src="'http://127.0.0.1:3000/'+item.md" alt="">
+      <img :src="'http://127.0.0.1:3000/'+item.md" @click="skip" :data-lid="item.lid" alt=""> <!--自定义属性:data-lid="item.lid"  用来传参 -->
       <h4>{{item.title}}</h4>
       <div class="info">
         <span class="now">¥{{item.price.toFixed(2)}}</span>
@@ -33,9 +33,16 @@ export default {
       url+="&pageSize="+this.pageSize;
       this.axios.get(url).then(result=>{
         var rows=this.list.concat(result.data.data);
+        console.log(result.data.data)
         this.list=rows;
       })
     },
+    skip(e){
+      // e.target.dataset  接收自定义属性的参数
+      var pid=e.target.dataset.lid;
+      console.log(pid)
+     this.$router.push("/goodinfo?pid="+pid);
+    }
   },
   created(){
     this.ajax();

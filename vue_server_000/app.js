@@ -16,6 +16,16 @@ app.use(cors({
   origin:["http://127.0.0.1:8080","http://locallhost:8080"],
   credentials:true
 }));
+//配置session
+const session=require("express-session");
+app.use(session({
+  secret:"128位随机字符",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{
+    maxAge:1000 * 60 * 60 * 8
+  }
+}));
 //7.加载第三方模块body-parser
 const bodyParser=require("body-parser");
 //8.配置对特殊json是否自动转换 不转
@@ -139,5 +149,98 @@ app.post("/addcomment",(req,res)=>{
 
 //6:加载body-parser模块 配置 写在app.js前面
 
-
+//功能七:获取商品详细信息
+app.get("/findProduct",(req,res)=>{
+  //1：参数 pid
+  var pid=req.query.pid;
+  var sql="SELECT lname,price FROM xz_laptop WHERE lid=?";
+  pool.query(sql,[pid],(err,result)=>{
+    if(err) throw err;
+    res.send({code:1,data:result});
+  })
+})
+//功能八:用户登陆验证
+app.get("/login",(req,res)=>{
+  var uname=req.query.uname;
+  var upwd=req.query.upwd;
+  var sql="SELECT id FROM xz_login WHERE uname=?AND upwd=md5(?)";
+  pool.query(sql,[uname,upwd],(err,result)=>{
+    if(err) throw err;
+    if(result.length==0){
+      res.send({code:-1,msg:"用户名或密码错误"});
+    }else{
+      var id=result[0].id;
+      req.session.uid=id;
+      console.log(req.session.uid);
+      res.send({code:1,msg:"登陆成功"});
+    }
+  })
+})
+//功能九:添加购物车
+app.get("/addcart",(req,res)=>{
+  var pid=parseInt(req.query.pid);
+  var count=1;
+  var uid=req.session.uid;
+  console.log(req.session.uid);
+  var price=parseInt(req.query.price);
+  var sql="SELECT id FROM xz_cart WHERE uid=? AND pid=?";
+  pool.query(sql,[uid,pid],(err,result)=>{
+    if(err) throw err;
+    if(result.length==0){
+     var sql=`INSERT INTO xz_cart VALUES(null,1,${price},${pid},${uid})`;
+    }else{
+     var sql=`UPDATE xz_cart SET count=count+1 WHERE pid=${pid} AND uid=${uid}`;
+    }
+    pool.query(sql,(err,result)=>{
+      if(err) throw err;
+      if(result.affectedRows>0){
+        res.send({code:1,msg:"添加成功"});
+      }else{
+        res.send({code:-1,msg:"添加失败"});
+      }
+      
+    })
+  })
+});
+//功能十:购物车列表
+app.get("/cartlist",(req,res)=>{
+  var uid=req.session.uid;
+  console.log(req.session.uid);
+  var sql="SELECT c.id,c.count,c.price,";
+  sql+="c.uid,c.pid,l.lname";
+  sql+=" FROM xz_cart c,xz_laptop l";
+  sql+=" WHERE l.lid=c.pid";
+  sql+=" AND c.uid=?";
+  pool.query(sql,[uid],(err,result)=>{
+    if(err) throw err;
+   res.send({code:1,data:result});
+  })
+})
+//功能十一:删除购物车中商品
+app.get("/delcartitem",(req,res)=>{
+  var id=req.query.id;
+  var sql="DELETE FROM xz_cart WHERE id = ?";
+  pool.query(sql,[id],(err,result)=>{
+    if(err) throw err;
+    if(result.affectedRows>0){
+      res.send({code:1,msg:"删除成功"})
+    }else{
+      res.send({code:-1,msg:"删除失败"})
+    }
+  })
+})
+//功能十二:删除购物车多个指定商品
+app.get("/remove",(req,res)=>{
+  var ids=req.query.ids;
+  var sql="DELETE FROM xz_cart";
+  sql+=" WHERE id IN ("+ids+")";
+  pool.query(sql,(err,result)=>{
+    if(err) throw err;
+    if(result.affectedRows>0){
+      res.send({code:1,msg:"删除成功"})
+    }else{
+      res.send({code:-1,msg:"删除失败"})
+    }
+  })
+})
 
